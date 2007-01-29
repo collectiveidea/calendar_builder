@@ -5,9 +5,20 @@ module Calendar
     
     class Day
       attr_accessor :date, :id, :css_classes
-      def initialize(date)
+      def initialize(date, calendar)
         @date = date
+        @calendar = calendar
         @css_classes = ['day']
+        @css_classes << "other_month" unless self.during_month?
+        @css_classes << "weekend" if self.weekend?
+      end
+      
+      def during_month?
+        (@calendar.beginning_of_month..@calendar.end_of_month).include?(@date)
+      end
+      
+      def weekend?
+        [0, 6].include?(@date.wday)
       end
       
       def method_missing(method, *args)
@@ -22,7 +33,6 @@ module Calendar
     class Month
       include ActionView::Helpers::TextHelper
       include ActionView::Helpers::CaptureHelper
-      include ActionView::Helpers::TagHelper
       
       attr_accessor :options, :mab, :days
       
@@ -37,15 +47,15 @@ module Calendar
       end
 
       def each(&block)
-        (beginning_of_month..end_of_month).each do |day|
-          @days[day] = capture(Day.new(day), &block)
+        (beginning_of_month..end_of_month).each do |date|
+          day = Day.new(date, self)
+          @days[date] = { :day => day, :content => capture(day, &block) }
         end
       end
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
         doc.table :id => options[:id] do
-          doc.caption options[:caption] if options[:caption]
           doc.thead do
             doc.tr do
               doc.th beginning_of_month.strftime(options[:month_format]), :class => 'month', :colspan => 7
@@ -59,9 +69,11 @@ module Calendar
           doc.tbody do 
             self.weeks_in_month.times do |week|
               doc.tr do
-                self.days_in_week(week).each do |day|
-                  doc.td :class => classes_for_day(day) do |cell|
-                    cell << (self.days[day] || day.mday.to_s)
+                self.days_in_week(week).each do |date|
+                  day = self.days[date] ? self.days[date][:day] : Day.new(date, self)
+                  content = self.days[date] ? self.days[date][:content] : date.mday.to_s
+                  doc.td :class => day.css_classes.join(" ") do |cell|
+                    cell << content
                   end
                 end
               end

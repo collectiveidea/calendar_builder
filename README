@@ -1,4 +1,6 @@
 CalendarBuilder
 ===============
 
-Description goes here
+== ToDo
+
+* Extract CSS classes into options (month, day, weekend, other_month)
