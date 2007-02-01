@@ -21,7 +21,7 @@ module CollectiveIdea
       cal = Calendar::Builder.const_get(type.to_s.camelize).new(options)
 
       cal.each do |day|
-        (grouped_events[day.date] || []).each(&block) do |event|
+        (grouped_events[day.date] || []).each do |event|
           yield event
         end
       end
