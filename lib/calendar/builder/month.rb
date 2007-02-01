@@ -1,56 +1,10 @@
-require 'builder'
-
 module Calendar
   module Builder
     
-    class Day
-      attr_accessor :date, :id, :css_classes
-      def initialize(date, calendar)
-        @date = date
-        @calendar = calendar
-        @css_classes = ['day']
-        @css_classes << "other_month" unless self.during_month?
-        @css_classes << "weekend" if self.weekend?
-      end
-      
-      def during_month?
-        (@calendar.beginning_of_month..@calendar.end_of_month).include?(@date)
-      end
-      
-      def weekend?
-        [0, 6].include?(@date.wday)
-      end
-      
-      def method_missing(method, *args)
-        date.send(method, *args)
-      end
-      
-      def to_s
-        date.mday.to_s
-      end
-    end
-    
-    class Month
-      include ActionView::Helpers::TextHelper
-      include ActionView::Helpers::CaptureHelper
-      
-      attr_accessor :options, :mab, :days
+    class Month < Week
       
       def initialize(options = {})
-        @options = {
-          :date => Date.today,
-          :first_day_of_week => 0,
-          :abbreviate_labels => false,
-          :month_format => "%B"
-        }.merge(options)
-        @days = {}
-      end
-
-      def each(&block)
-        (beginning_of_month..end_of_month).each do |date|
-          day = Day.new(date, self)
-          @days[date] = { :day => day, :content => capture(day, &block) }
-        end
+        super({ :month_format => "%B" }.merge(options))
       end
 
       def to_s
@@ -69,7 +23,7 @@ module Calendar
           doc.tbody do 
             self.weeks_in_month.times do |week|
               doc.tr do
-                self.days_in_week(week).each do |date|
+                self.days_in_week(beginning_of_month + (week * 7)).each do |date|
                   day = self.days[date] ? self.days[date][:day] : Day.new(date, self)
                   content = self.days[date] ? self.days[date][:content] : date.mday.to_s
                   doc.td :class => day.css_classes.join(" ") do |cell|
@@ -82,31 +36,12 @@ module Calendar
         end
       end
       
-      def classes_for_day(date)
-        returning [] do |classes|
-          classes << "day"
-          classes << "other_month" if date < beginning_of_month || date > end_of_month
-        end.join(" ")
+      def begin_on
+        beginning_of_month
       end
       
-      def days_in_week(week, &block)
-        ((beginning_of_week(beginning_of_month) + (week * 7))..(end_of_week(beginning_of_month) + (week * 7))).to_a
-      end
-      
-      def days_of_week
-        @days_of_week ||= returning((options[:abbreviate_labels] ? Date::ABBR_DAYNAMES : Date::DAYNAMES).dup) do |day_names|
-          self.options[:first_day_of_week].times do
-            day_names.push(day_names.shift)
-          end
-        end
-      end
-      
-      def beginning_of_week(date)
-        date - days_between(options[:first_day_of_week], date.wday)
-      end
-      
-      def end_of_week(date)
-        date + days_between(date.wday, options[:first_day_of_week] - 1)
+      def end_on
+        end_of_month
       end
       
       def beginning_of_month
@@ -123,16 +58,16 @@ module Calendar
         weeks
       end
       
-    private
-    
-      def days_between(first, second)
-        if first > second
-          second + (7 - first)
-        else
-          second - first
-        end
+      def add_default_classes(proxy)
+        super(proxy)
+        proxy.css_classes << "other_month" unless self.during_month?(proxy.date)
+        proxy
       end
-
+      
+      def during_month?(date)
+        (beginning_of_month..end_of_month).include?(date)
+      end
+      
     end
   end
 end
