@@ -4,7 +4,10 @@ module Calendar
     class Month < Week
       
       def initialize(options = {})
-        super({ :month_format => "%B" }.merge(options))
+        super({
+          :month_format => "%B",
+          :day_label_format => "%A"
+        }.merge(options))
       end
 
       def to_s
@@ -15,17 +18,18 @@ module Calendar
               doc.th beginning_of_month.strftime(options[:month_format]), :class => 'month', :colspan => 7
             end
             doc.tr do
-              self.days_of_week.each do |day|
-                doc.th day, :class => 'day'
+              (beginning_of_week..end_of_week).each do |day|
+                doc.th day.strftime(options[:day_label_format]),
+                  :class => Proxy.new(day, self).css_classes.join(" ")
               end
             end
           end
           doc.tbody do 
-            self.weeks_in_month.times do |week|
+            weeks_in_month.times do |week|
               doc.tr do
-                self.days_in_week(beginning_of_month + (week * 7)).each do |date|
-                  proxy = self.days[date] ? self.days[date][:proxy] : Proxy.new(date, self)
-                  content = self.days[date] ? self.days[date][:content] : date.mday.to_s
+                days_in_week(beginning_of_month + (week * 7)).each do |date|
+                  proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
+                  content = @days[date] ? @days[date][:content] : date.mday.to_s
                   doc.td :class => proxy.css_classes.join(" ") do |cell|
                     cell << content
                   end
@@ -60,7 +64,7 @@ module Calendar
       
       def add_default_classes(proxy)
         super(proxy)
-        proxy.css_classes << "other_month" unless self.during_month?(proxy.date)
+        proxy.css_classes << "other_month" unless during_month?(proxy.date)
         proxy
       end
       

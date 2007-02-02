@@ -6,9 +6,7 @@ module Calendar
       attr_accessor :options
       
       def initialize(options = {})
-        @options = {
-          :abbreviate_labels => false,
-        }.merge(options)
+        @options = options
       end
       
     end

@@ -9,7 +9,7 @@ module CollectiveIdea
         yield(cal)
         concat cal.to_s, block.binding
       else
-        cal.to_s
+        cal
       end
     end
     
