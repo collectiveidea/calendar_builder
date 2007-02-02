@@ -9,7 +9,7 @@ module Calendar
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
-        doc.table :id => options[:id] do
+        doc.table :id => options[:id], :class => 'calendar', :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
               doc.th beginning_of_month.strftime(options[:month_format]), :class => 'month', :colspan => 7
@@ -24,9 +24,9 @@ module Calendar
             self.weeks_in_month.times do |week|
               doc.tr do
                 self.days_in_week(beginning_of_month + (week * 7)).each do |date|
-                  day = self.days[date] ? self.days[date][:day] : Day.new(date, self)
+                  proxy = self.days[date] ? self.days[date][:proxy] : Proxy.new(date, self)
                   content = self.days[date] ? self.days[date][:content] : date.mday.to_s
-                  doc.td :class => day.css_classes.join(" ") do |cell|
+                  doc.td :class => proxy.css_classes.join(" ") do |cell|
                     cell << content
                   end
                 end
