@@ -1,15 +1,20 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 class CalendarController < ActionController::Base
-  def self.controller_name; "test"; end
-  def self.controller_path; "test"; end
+  def self.controller_name; "calendar"; end
+  def self.controller_path; "calendar"; end
+  layout false
+  
+  def month_builder
+    render :template => 'month_builder'
+  end
   
   def default_month_view
     render :inline => "<%= calendar %>"
   end
   
   def month
-    render :template => 'month', :layout => false
+    render :template => 'month'
   end
   
   # Re-raise errors caught by the controller.
@@ -30,6 +35,10 @@ class CalendarBuilderTest < Test::Unit::TestCase
     @request.host = "www.example.com"
   end
   
+  def test_month_builder
+    get :month_builder
+  end
+  
   def test_default_month
     get :default_month_view
     assert_calendar
@@ -37,7 +46,6 @@ class CalendarBuilderTest < Test::Unit::TestCase
   
   def test_month
     get :month
-    puts @response.body
     assert_calendar do
       assert_select "td" do
         assert_select "span.day", /\d/

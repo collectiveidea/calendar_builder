@@ -1,0 +1,23 @@
+<% calendar_builder :month do |cal| %>
+    <table id="mycal">
+        <thead>
+            <tr cosplan="7">
+                <%= cal.month %>
+            </tr>
+            <tr>
+                <% cal.days_of_week.each do |day| %>
+                    <td><%= day.strftime("%a") %></td>
+                <% end %>
+            </tr>
+        </thead>
+        <tbody>
+            <% cal.weeks.each do |week| %>
+                <tr>
+                    <% week.days.each do |day| %>
+                        <td><%= day.mday %></td>
+                    <% end %>
+                </tr>
+            <% end %>
+        </tbody>
+    </tabe>
+<% end %>

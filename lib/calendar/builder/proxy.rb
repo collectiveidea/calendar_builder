@@ -5,14 +5,14 @@ module Calendar
       def initialize(date, calendar)
         @date = date
         @calendar = calendar
-        @calendar.add_default_classes(self)
+        @css_classes = calendar.default_css_classes(date)
       end
   
       def method_missing(method, *args)
         if date.respond_to?(method)
           date.send(method, *args)
         else
-          @calendar.send(method, self.date, *args)
+          calendar.send(method, date, *args)
         end
       end
   

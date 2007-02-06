@@ -5,7 +5,7 @@ module Calendar
       
       def initialize(options = {})
         super({
-          :month_format => "%B",
+          :month_label_format => "%B",
           :day_label_format => "%A"
         }.merge(options))
       end
@@ -15,19 +15,19 @@ module Calendar
         doc.table :id => options[:id], :class => 'calendar', :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
-              doc.th beginning_of_month.strftime(options[:month_format]), :class => 'month', :colspan => 7
+              doc.th month, :class => 'month', :colspan => 7
             end
             doc.tr do
-              (beginning_of_week..end_of_week).each do |day|
+              days_of_week.each do |day|
                 doc.th day.strftime(options[:day_label_format]),
                   :class => Proxy.new(day, self).css_classes.join(" ")
               end
             end
           end
-          doc.tbody do 
-            weeks_in_month.times do |week|
+          doc.tbody do
+            weeks.each do |week|
               doc.tr do
-                days_in_week(beginning_of_month + (week * 7)).each do |date|
+                week.days.each do |date|
                   proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
                   content = @days[date] ? @days[date][:content] : date.mday.to_s
                   doc.td :class => proxy.css_classes.join(" ") do |cell|
@@ -62,14 +62,28 @@ module Calendar
         weeks
       end
       
-      def add_default_classes(proxy)
-        super(proxy)
-        proxy.css_classes << "other_month" unless during_month?(proxy.date)
-        proxy
+      def days_of_week
+        weeks.first.days
+      end
+      
+      def weeks
+        (0...weeks_in_month).collect do |i|
+          Week.new(@options.merge(:date => beginning_of_week(begin_on) + (7 * i)))
+        end
+      end
+      
+      def default_css_classes(date)
+        returning super(date) do |classes|
+          classes << "other_month" unless during_month?(date)
+        end
       end
       
       def during_month?(date)
         (beginning_of_month..end_of_month).include?(date)
+      end
+      
+      def month
+        date.strftime(options[:month_label_format])
       end
       
     end

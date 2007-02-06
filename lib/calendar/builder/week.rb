@@ -1,16 +1,27 @@
+require 'builder'
+
 module Calendar
   module Builder
-    
-    class Week < Base
+    #
+    # == Options
+    # * <tt>:date</tt>: The date that the calendar should show.  Default is <tt>Date.today</tt>.
+    # * <tt>:first_day_of_week</tt>: A symbol or integer (0 == <tt>:sunday</tt>,
+    #   6 == <tt>:saturday</tt>) for day of week that the calendar should start on.
+    #   Default is <tt>:sunday</tt>
+    # * <tt>:day_label_format</tt>: The strftime format for the label
+    #
+    class Week
       include ActionView::Helpers::TextHelper
       include ActionView::Helpers::CaptureHelper
       
+      attr_accessor :options
+
       def initialize(options = {})
-        super({
+        self.options = {
           :date => Date.today,
-          :first_day_of_week => 0,
+          :first_day_of_week => :sunday,
           :day_label_format => "%a, %b %d"
-        }.merge(options))
+        }.merge(options)
         @days = {}
       end
       
@@ -25,10 +36,12 @@ module Calendar
         end
       end
       
+      # Date that the calendar begins on
       def begin_on
         beginning_of_week
       end
       
+      # Date that the calendar ends on
       def end_on
         end_of_week
       end
@@ -38,7 +51,7 @@ module Calendar
         doc.table :id => options[:id], :class => 'calendar', :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
-              (beginning_of_week..end_of_week).each do |day|
+              days.each do |day|
                 doc.th day.strftime(options[:day_label_format]),
                   :class => Proxy.new(day, self).css_classes.join(" ")
               end
@@ -46,7 +59,7 @@ module Calendar
           end
           doc.tbody do 
             doc.tr do
-              days_in_week.each do |date|
+              days.each do |date|
                 proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
                 content = @days[date] ? @days[date][:content] : date.mday.to_s
                 doc.td :class => proxy.css_classes.join(" ") do |cell|
@@ -57,45 +70,61 @@ module Calendar
           end
         end
       end
+      
+      # An integer of the first day of the week
+      def first_day_of_week
+        @first_day_of_week ||= case options[:first_day_of_week]
+        when Numeric then options[:first_day_of_week]
+        when Symbol
+          Date::DAYNAMES.collect {|day| day.downcase.to_sym }.index(options[:first_day_of_week])
+        else 0
+        end
+      end
 
-      def days_in_week(date = options[:date])
-        (beginning_of_week(date)..end_of_week(date)).to_a
+      def days
+        (begin_on..end_on).to_a
       end
       
+      # The date of the first day of the week for the given date
       def beginning_of_week(date = options[:date])
-        date - days_between(options[:first_day_of_week], date.wday)
+        date - days_between(first_day_of_week, date.wday)
       end
       
+      # Returns true if the given date falls on the first day of the week
       def beginning_of_week?(date = options[:date])
         date == beginning_of_week(date)
       end
 
+      # The date of the last day of the week for the given date
       def end_of_week(date = options[:date])
-        date + days_between(date.wday, options[:first_day_of_week] - 1)
+        date + days_between(date.wday, first_day_of_week - 1)
       end
 
+      # Returns true if the given date falls on the last day of the week
       def end_of_week?(date = options[:date])
         date == end_of_week(date)
       end
 
-      
-      def add_default_classes(proxy)
-        proxy.css_classes = ['day']
-        proxy.css_classes << "weekend" if weekend?(proxy.date)
-        proxy.css_classes << "first" if beginning_of_week?(proxy.date)
-        proxy.css_classes << "last" if end_of_week?(proxy.date)
-        proxy.css_classes << "today" if Date.today == proxy.date
-        proxy
+      def default_css_classes(date)
+        returning ['day'] do |classes|
+          classes << "weekend" if weekend?(date)
+          classes << "first" if beginning_of_week?(date)
+          classes << "last" if end_of_week?(date)
+          classes << "today" if Date.today == date
+        end
       end
 
+      # Returns true if the given date falls on a Saturday or Sunday
       def weekend?(date)
         [0, 6].include?(date.wday)
       end
       
+      # Returns a new calendar for the next week
       def next
         self.class.new(@options.merge(:date => @options[:date] + 7))
       end
 
+      # Returns a new calendar for previous week
       def previous
         self.class.new(@options.merge(:date => @options[:date] - 7))
       end
