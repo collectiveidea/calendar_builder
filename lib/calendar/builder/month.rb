@@ -12,7 +12,7 @@ module Calendar
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
-        doc.table :id => options[:id], :class => 'calendar', :cellspacing => 0, :cellpadding => 0 do
+        doc.table :id => options[:id], :class => 'month calendar', :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
               doc.th month, :class => 'month', :colspan => 7
@@ -26,7 +26,10 @@ module Calendar
           end
           doc.tbody do
             weeks.each do |week|
-              doc.tr do
+              row_classes = []
+              row_classes << 'first' if week.beginning_of_week == beginning_of_week(beginning_of_month)
+              row_classes << 'last' if week.beginning_of_week == beginning_of_week(end_of_month)
+              doc.tr :class => row_classes.join(" ") do
                 week.days.each do |date|
                   proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
                   content = @days[date] ? @days[date][:content] : date.mday.to_s
@@ -75,6 +78,8 @@ module Calendar
       def default_css_classes(date)
         returning super(date) do |classes|
           classes << "other_month" unless during_month?(date)
+          classes << "first_day_of_month" if date == beginning_of_month
+          classes << "last_day_of_month" if date == end_of_month
         end
       end
       
