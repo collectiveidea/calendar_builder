@@ -1,6 +1,5 @@
 module Calendar
   module Builder
-    
     class Month < Week
       
       def initialize(options = {})
@@ -33,7 +32,7 @@ module Calendar
                 week.days.each do |date|
                   proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
                   content = @days[date] ? @days[date][:content] : date.mday.to_s
-                  doc.td :class => proxy.css_classes.join(" ") do |cell|
+                  doc.td :id => proxy.id, :class => proxy.css_classes.join(" ") do |cell|
                     cell << content
                   end
                 end
@@ -89,6 +88,16 @@ module Calendar
       
       def month
         date.strftime(options[:month_label_format])
+      end
+      
+      # Returns a new calendar for the next week
+      def next
+        self.class.new(@options.merge(:date => date.to_time + 1.month))
+      end
+
+      # Returns a new calendar for previous week
+      def previous
+        self.class.new(@options.merge(:date => date.to_time + 1.month))
       end
       
     end

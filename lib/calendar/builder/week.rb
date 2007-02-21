@@ -22,6 +22,7 @@ module Calendar
           :first_day_of_week => :sunday,
           :day_label_format => "%a, %b %d"
         }.merge(options)
+        self.options[:date] = self.options[:date].to_date
         @days = {}
       end
       
@@ -48,7 +49,7 @@ module Calendar
       
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
-        doc.table :id => options[:id], :class => 'calendar', :cellspacing => 0, :cellpadding => 0 do
+        doc.table :id => options[:id], :class => 'week calendar', :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
               days.each do |day|
@@ -62,7 +63,7 @@ module Calendar
               days.each do |date|
                 proxy = @days[date] ? @days[date][:proxy] : Proxy.new(date, self)
                 content = @days[date] ? @days[date][:content] : date.mday.to_s
-                doc.td :class => proxy.css_classes.join(" ") do |cell|
+                doc.td :class => proxy.css_classes.join(" "), :valign => :top do |cell|
                   cell << content
                 end
               end
