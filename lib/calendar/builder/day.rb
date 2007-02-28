@@ -9,9 +9,22 @@ module Calendar
         @options = {
           :date => Date.today,
           :begin_hour => 7,
-          :end_hour => 18
+          :end_hour => 18,
+          :day_label_format => "%A, %B %d, %Y",
         }.merge(options)
         @options[:except] = [@options[:except]].compact.flatten
+      end
+      
+      def type
+        :day
+      end
+      
+      def day_label_format
+        options[:day_label_format]
+      end
+      
+      def days
+        [date]
       end
       
       def date

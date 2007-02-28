@@ -27,6 +27,14 @@ module Calendar
         @days = {}
       end
       
+      def type
+        :week
+      end
+      
+      def day_label_format
+        options[:day_label_format]
+      end
+      
       def date
         @options[:date]
       end
