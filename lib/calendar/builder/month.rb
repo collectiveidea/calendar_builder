@@ -97,7 +97,7 @@ module Calendar
 
       # Returns a new calendar for previous week
       def previous
-        self.class.new(@options.merge(:date => date.to_time + 1.month))
+        self.class.new(@options.merge(:date => date.to_time - 1.month))
       end
       
     end
