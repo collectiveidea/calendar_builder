@@ -15,13 +15,14 @@ module Calendar
       include ActionView::Helpers::CaptureHelper
       
       attr_accessor :options
-
+      
       def initialize(options = {})
         self.options = {
           :date => Date.today,
           :first_day_of_week => :sunday,
-          :day_label_format => "%a, %b %d"
+          :day_label_format => "%a, %b %d",
         }.merge(options)
+        self.options[:except] = [self.options[:except]].flatten
         self.options[:date] = self.options[:date].to_date
         @days = {}
       end
@@ -77,13 +78,13 @@ module Calendar
         @first_day_of_week ||= case options[:first_day_of_week]
         when Numeric then options[:first_day_of_week]
         when Symbol
-          Date::DAYNAMES.collect {|day| day.downcase.to_sym }.index(options[:first_day_of_week])
+          DAYNAME_SYMBOLS.index(options[:first_day_of_week])
         else 0
         end
       end
 
       def days
-        (begin_on..end_on).to_a
+        (begin_on..end_on).to_a.reject {|day| options[:except].include?(DAYNAME_SYMBOLS[day.wday]) }
       end
       
       # The date of the first day of the week for the given date

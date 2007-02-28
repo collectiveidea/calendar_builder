@@ -52,4 +52,16 @@ class WeekTest < Test::Unit::TestCase
     assert_equal expected, actual, "expected #{expected.to_s} but was #{actual.to_s}"
   end
   
+  def test_except_single
+    cal = Calendar::Builder::Week.new :except => :sunday
+    assert_equal 6, cal.days.size
+    cal.days.each {|day| assert_not_equal 0, day.wday}
+  end
+
+  def test_except_multiple
+    cal = Calendar::Builder::Week.new :except => [:saturday, :sunday]
+    assert_equal 5, cal.days.size
+    cal.days.each {|day| assert ![0, 6].include?(day.wday) }
+  end
+  
 end

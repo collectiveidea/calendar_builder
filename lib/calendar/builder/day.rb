@@ -11,6 +11,7 @@ module Calendar
           :begin_hour => 7,
           :end_hour => 18
         }.merge(options)
+        @options[:except] = [@options[:except]].compact.flatten
       end
       
       def date
@@ -32,11 +33,19 @@ module Calendar
       end
       
       def next
-        Day.new(options.merge(:date => date + 1))
+        day = Day.new(options.merge(:date => date + 1))
+        while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
+          day = day.next
+        end
+        day
       end
       
       def previous
-        Day.new(options.merge(:date => date - 1))
+        day = Day.new(options.merge(:date => date - 1))
+        while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
+          day = day.previous
+        end
+        day
       end
     end
   end
