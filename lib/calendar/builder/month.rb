@@ -5,13 +5,14 @@ module Calendar
       def initialize(options = {})
         super({
           :month_label_format => "%B",
-          :day_label_format => "%A"
+          :day_label_format => "%A", 
+          :month_classes => 'month calendar'
         }.merge(options))
       end
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
-        doc.table :id => options[:id], :class => 'month calendar', :cellspacing => 0, :cellpadding => 0 do
+        doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
               doc.th month, :class => 'month', :colspan => 7
