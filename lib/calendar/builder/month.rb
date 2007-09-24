@@ -9,6 +9,10 @@ module Calendar
           :month_classes => 'month calendar'
         }.merge(options))
       end
+      
+      def type
+        :month
+      end
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)

@@ -51,9 +51,19 @@ module Calendar
         beginning_of_week
       end
       
+      # Time that the calendar begins at
+      def begin_at
+        begin_on.to_time
+      end
+      
       # Date that the calendar ends on
       def end_on
         end_of_week
+      end
+      
+      # Time that the calendar ends at
+      def end_at
+        end_on.to_time.end_of_day
       end
       
       def to_s
@@ -92,7 +102,9 @@ module Calendar
       end
 
       def days
-        (begin_on..end_on).to_a.reject {|day| options[:except].include?(DAYNAME_SYMBOLS[day.wday]) }
+        (begin_on..end_on).to_a.reject do |day|
+          options[:except].include?(DAYNAME_SYMBOLS[day.wday])
+        end
       end
       
       # The date of the first day of the week for the given date

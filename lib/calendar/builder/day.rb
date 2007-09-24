@@ -34,10 +34,12 @@ module Calendar
       def begin_on
         date.to_time
       end
+      alias_method :begin_at, :begin_on
       
       def end_on
         date.to_time.end_of_day
       end
+      alias_method :end_at, :end_on
       
       def hours
         (options[:begin_hour]..options[:end_hour]).collect do |hour|

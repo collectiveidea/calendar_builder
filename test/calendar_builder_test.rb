@@ -20,7 +20,7 @@ class CalendarController < ActionController::Base
   # Re-raise errors caught by the controller.
   def rescue_action(e) raise e end
 end
-CalendarController.template_root = File.dirname(__FILE__) + "/fixtures"
+CalendarController.view_paths = [File.dirname(__FILE__) + "/fixtures"]
 
 class CalendarBuilderTest < Test::Unit::TestCase
   
