@@ -3,4 +3,4 @@
 require 'core_ext/time'
 require 'calendar_builder'
 
-ActionController::Base.send :include, CollectiveIdea::CalendarBuilder
+ActionView::Base.send :include, CollectiveIdea::CalendarBuilder

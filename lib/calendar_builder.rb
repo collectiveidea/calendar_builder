@@ -2,10 +2,6 @@
 module CollectiveIdea
   module CalendarBuilder
     
-    def self.included(base)
-      base.helper_method :calendar_builder, :calendar
-    end
-    
     def calendar_builder(type = :month, options = {}, &block)
       returning Calendar::Builder.for(type).new(options) do |cal|
         yield cal if block_given?
