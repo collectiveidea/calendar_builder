@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>script.aculo.us Unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <script src="prototype.js" type="text/javascript"></script>
+  <script src="../../assets/iso8601.js" type="text/javascript"></script>
+  <script src="../../assets/calendar.js" type="text/javascript"></script>
+  <script src="unittest.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="test.css" type="text/css" />
+  <link rel="stylesheet" href="../../assets/calendar.css" type="text/css" />
+</head>
+<body>
+<h1>calendar_builder Unit test file</h1>
+<p>
+  Test of drag &amp; drop functions in dragdrop.js
+</p>
+
+<!-- Log output -->
+<div id="testlog"> </div>
+
+<div id="calendar" class="calendar day">
+  <div class="day">
+    <h3 class="label">Tuesday, February 12, 2008</h3>
+    <dl class="vevent" id="event_1">
+      <dt>
+        <abbr class="dtstart" title="2008-02-12T15:15:00-06:00">3:15</abbr> –
+        <abbr class="dtend" title="2008-02-12T16:15:00-06:00">4:15 PM</abbr>
+      </dt>
+      <dd>
+        Event 1 body
+      </dd>
+    </dl>
+    <dl class="vevent" id="event_2">
+      <dt>
+        <abbr class="dtstart" title="2008-02-12T19:00:00-06:00">7:00</abbr> –
+        <abbr class="dtend" title="2008-02-12T21:00:00-06:00">9:00 PM</abbr>
+      </dt>
+      <dd>
+        Event 2 body
+      </dd>
+    </dl>
+  </div>
+</div>
+<!-- Tests follow -->
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+  new Test.Unit.Runner({
+    
+    setup: function() { with(this) {
+      this.calendar = new Calendar('calendar');
+    }},
+    
+    teardown: function() { with(this) {
+      this.calendar.unload();
+    }},
+    
+    testCalendarConstructor: function() { with(this) {
+      assertInstanceOf(Calendar, this.calendar);
+    }},
+    
+    testFindsEvents: function() { with(this) {
+      assertEqual(2, this.calendar.events.length);
+      ['event_1', 'event_2'].each(function(id) {
+        assertNotNull(this.calendar.events.detect(function(event) {
+          return event.element.id == id;
+        }.bind(this)));
+      }.bind(this));
+    }},
+    
+    testSetsBeginHourToBeginningOfFirstEvent: function() { with(this) {
+      var first = Date.parseISO8601('2008-02-12T15:15:00-06:00');
+      assertEqual(first.getHours(), this.calendar.options.beginHour);
+    }},
+    
+    testSetsEndHourToEndOfLastEvent: function() { with(this) {
+      var last = Date.parseISO8601('2008-02-12T21:00:00-06:00');
+      assertEqual(last.getHours(), this.calendar.options.endHour);
+    }}
+    
+    // testDraggableStartEffect: function() { with(this) {
+    //   var d = new Draggable('p_test2');
+    //   assert(d.options.starteffect, 'There should be a default start effect.');
+    //   d = new Draggable('p_test3', { endeffect: Prototype.EmptyFunction });
+    //   assert(undefined === d.options.startEffect, 'There should be no default start effect.');
+    // }},
+    // 
+    // testAutoPositioning: function() { with(this) {
+    //   assertEqual('static', Element.getStyle('div_test','position'));
+    //   new Draggable('div_test');
+    //   new Draggable('div_absolute_test');
+    //   new Draggable('div_absolute_inline_test');
+    //   assertEqual('relative', Element.getStyle('div_test','position'));
+    //   assertEqual('absolute', Element.getStyle('div_absolute_test','position'));
+    //   assertEqual('absolute', Element.getStyle('div_absolute_inline_test','position'));
+    // }},
+    // 
+    // testDroppbalesBasics: function() { with(this) {
+    //   assertEqual(0, Droppables.drops.length);
+    //   assertEqual('static', Element.getStyle('droppable_test','position'));
+    //   
+    //   Droppables.add('droppable_test');
+    //   assertEqual(1, Droppables.drops.length);
+    //   assertEqual('relative', Element.getStyle('droppable_test','position'));
+    //   
+    //   Droppables.remove('droppable_test');
+    //   assertEqual(0, Droppables.drops.length);
+    //   
+    //   // accept option should take strings or array of strings
+    //   Droppables.add('droppable_test',{accept:'document'});
+    //   assertEqual(['document'].inspect(), Droppables.drops[0].accept.inspect());
+    //   Droppables.remove('droppable_test');
+    //   
+    //   Droppables.add('droppable_test',{accept:['document','image']});
+    //   assertEqual(['document','image'].inspect(), Droppables.drops[0].accept.inspect());
+    //   Droppables.remove('droppable_test');
+    // }},
+    // 
+    // testDroppableContainment: function() { with(this) {
+    //   // Droppable containers should be cached
+    //   Droppables.add('droppable_test', {
+    //     containment:'droppable_container' });
+    //   assertEqual(1, Droppables.drops[0]._containers.length);
+    //   assertEqual($('droppable_container'), Droppables.drops[0]._containers[0]);
+    //   assert(Droppables.isContained($('d1'), Droppables.drops[0]));
+    //   assert(Droppables.isContained($('d2'), Droppables.drops[0]));
+    //   assert(!Droppables.isContained($('d3'), Droppables.drops[0]));
+    //   Droppables.remove('droppable_test');
+    //   
+    //   Droppables.add('droppable_test', {
+    //     containment:['droppable_container','droppable_container_2'] });
+    //   assertEqual(2,  Droppables.drops[0]._containers.length);
+    //   assertEqual($('droppable_container'), Droppables.drops[0]._containers[0]);
+    //   assertEqual($('droppable_container_2'), Droppables.drops[0]._containers[1]);
+    //   assert(Droppables.isContained($('d1'), Droppables.drops[0]));
+    //   assert(Droppables.isContained($('d2'), Droppables.drops[0]));
+    //   assert(Droppables.isContained($('d3'), Droppables.drops[0]));
+    //   Droppables.remove('droppable_test');
+    // }},
+    // 
+    // testDroppablesIsAffected: function() { with(this) {
+    //   Droppables.add('droppable_test');
+    //   
+    //   Position.prepare();
+    //   assert(!Droppables.isAffected([-10, -10], null, Droppables.drops[0]));
+    //   
+    //   var p = Position.page($('droppable_test'));
+    //   assert(Droppables.isAffected(p, null, Droppables.drops[0]));
+    // }}
+    
+  }, "testlog");
+// ]]>
+</script>
+</body>
+</html>

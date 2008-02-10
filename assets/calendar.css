@@ -1,0 +1,200 @@
+/* Calendar
+---------------------------------------------------------------------------- */
+
+div.calendar {
+  border: 1px solid #CCC;
+  border-top: none;
+  overflow: visible;
+  position: relative;
+}
+
+.calendar .day .label, .calendar thead th.day {
+  background: #EEE;
+  border-top: 1px solid #BDC3C7;
+  border-right: 1px solid #A4ACB2;
+  border-bottom: 1px solid #7F807F;
+  padding: 2px;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  zoom: 1; /* give it layout in IE */
+}
+.calendar .first .label {
+  border-left: 1px solid #A4ACB2;
+}
+
+.day .today {
+  background: url(../images/current_label_background.gif) repeat-x;
+}
+
+.calendar div.day {
+  float: left;
+  width: 100%;
+  position: relative;
+  margin-top: 0;
+}
+.month .day, .week .day {
+  width: 14.286%;
+}
+
+/* === Month =============================================================== */
+
+.month thead th.month {
+  text-align: center;
+  text-transform: none;
+  color: #000;
+  
+}
+
+.month thead th.day {
+  font-size: 0.8em;
+  text-transform: lowercase;
+}
+
+.month thead th.first {
+  border-left: 1px solid #A4ACB2;
+}
+
+.month .day {
+  padding: 2px;
+  text-align: center;
+}
+
+.month td.day {
+  border-right: 1px solid #CCC;
+  border-top: 1px solid #CCC;
+}
+
+.month tr.last td.day {
+  border-bottom: 1px solid #CCC;
+}
+.month td.first {
+  border-left: 1px solid #CCC;
+}
+
+.month td.other_month {
+  color: #CCC;
+}
+
+/* === Labels ============================================================== */
+
+div.calendar {
+  margin-left: 4em;
+}
+
+.calendar .labels div {
+  position: absolute;
+  width: 100%;
+  border-top: 1px solid #DDD;
+}
+
+.calendar .labels .odd {
+  background-color: rgb(238, 240, 255);
+}
+
+.calendar .labels div p {
+  margin: 0;
+  padding: 0;
+  left: -4.5em;
+  width: 4em;
+  text-align: right;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: #666;
+  position: absolute;
+}
+
+.week, .day {
+  margin-top: 2.5em;
+}
+.calendar .day {
+  margin-top: 0;
+}
+
+.day .label {
+  margin-top: -1.7em;
+}
+
+.day .day .label {
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid #A4ACB2;
+}
+
+
+/* === Events =============================================================== */
+
+.calendar .vevent {
+  position: absolute;
+  overflow: hidden;
+  -moz-border-radius: 0.7em;
+  -khtml-border-radius: 0.7em;
+  border-radius: 0.7em;
+  margin: 0;
+  padding: 0;
+}
+.calendar .vevent dt {
+  white-space: nowrap;
+  position: relative;
+  -moz-border-radius-topright: inherit;
+  -moz-border-radius-topleft: inherit;
+  -khtml-border-top-left-radius: inherit;
+  -khtml-border-top-right-radius: inherit;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+.calendar dl dd, .calendar dl dt {
+  margin: 0;
+  padding: 0.2em 0.5em;
+  font-size: 0.9em;
+}
+
+.calendar dt abbr {
+  border-bottom: none;
+}
+
+#loading-calendar {
+  width: 70px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 30px;
+  text-align: center;
+	background: url(../images/spinner.gif) no-repeat top center;
+}
+
+
+.calendar dl, .calendar dl a {
+  color: #FFF;
+}
+
+.calendar .vevent {
+  background-color: #418AE9;
+  border-color: #3070EC;
+}
+
+.calendar .vevent dt {
+  background-color: #3070EC;
+}
+
+
+.calendar-controls {
+  text-align: center;
+}
+.calendar-controls a {
+  background: #EEE url(../images/label_background.gif) repeat-x;
+  border: 1px solid #CCC;
+  padding: 0.3em 0.5em;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+.calendar-controls a.selected {
+  background: #EEE url(../images/selected_calendar_type.gif) repeat-x;
+  color: #FFF;
+}
+
+.calendar-views {
+  position: absolute;
+  right: 1em;
+}
