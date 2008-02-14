@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class CalendarController < ActionController::Base
   def self.controller_name; "calendar"; end
@@ -20,7 +20,8 @@ class CalendarController < ActionController::Base
   # Re-raise errors caught by the controller.
   def rescue_action(e) raise e end
 end
-CalendarController.view_paths = [File.dirname(__FILE__) + "/fixtures"]
+CalendarController.view_paths = [File.expand_path(File.dirname(__FILE__) + "/../fixtures")]
+ActionController::Routing::Routes.draw {|m| m.connect ':controller/:action/:id' }
 
 class CalendarBuilderTest < Test::Unit::TestCase
   

@@ -1,3 +1,9 @@
+require 'core_ext/time'
+require 'calendar/builder'
+require 'calendar/builder/proxy'
+require 'calendar/builder/day'
+require 'calendar/builder/week'
+require 'calendar/builder/month'
 
 module CollectiveIdea
   module CalendarBuilder
