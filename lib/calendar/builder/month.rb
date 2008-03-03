@@ -48,11 +48,11 @@ module Calendar
       end
       
       def begin_on
-        beginning_of_month
+        beginning_of_week(beginning_of_month)
       end
       
       def end_on
-        end_of_month
+        end_of_week(end_of_month)
       end
       
       def beginning_of_month

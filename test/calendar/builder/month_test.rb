@@ -9,11 +9,11 @@ module Calendar
       end
   
       def test_begin_on
-        assert_equal Date.civil(2007, 2, 1), @cal.begin_on
+        assert_equal Date.civil(2007, 1, 28), @cal.begin_on
       end
   
       def test_end_on
-        assert_equal Date.civil(2007, 2, -1), @cal.end_on
+        assert_equal Date.civil(2007, 3, 3), @cal.end_on
       end
   
       def test_weeks_in_month

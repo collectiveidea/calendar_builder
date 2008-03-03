@@ -55,6 +55,13 @@ module CollectiveIdea
           find_ordered(*args)
         end
       end
+      
+      # In a typical month calendar view, you'll have a couple days at the start and/or end of the month
+      # that are from the next/previous month.  This will find those dates too.  
+      # FIXME: Don't assume weeks start on Monday.
+      def find_for_month_with_outliers(date=Date.today, *args)
+        find_for_date_range(date.beginning_of_week-1..date.end_of_month.next_week.beginning_of_week-2, *args)
+      end
 
       def find_upcoming(*args)
         with_scope(:find => {:conditions => ["#{quoted_table_name}.#{quoted_begin_at_column_name} > ?", Time.now]}) { find_ordered(*args) }
