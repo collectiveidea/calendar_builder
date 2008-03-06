@@ -7,7 +7,9 @@ module Calendar
           :month_label_format => "%B",
           :day_label_format => "%A", 
           :month_classes => 'month calendar',
-          :month_header_classes => 'month'
+          :month_header_classes => 'month',
+          :cellspacing => 0,
+          :cellpadding => 0
         }.merge(options))
       end
       
@@ -17,7 +19,7 @@ module Calendar
 
       def to_s
         doc = ::Builder::XmlMarkup.new(:indent => 4)
-        doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => 0, :cellpadding => 0 do
+        doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => options[:cellspacing], :cellpadding => options[:cellpadding] do
           doc.thead do
             doc.tr do
               doc.th month, :class => options[:month_header_classes], :colspan => 7
