@@ -6,7 +6,8 @@ module Calendar
         super({
           :month_label_format => "%B",
           :day_label_format => "%A", 
-          :month_classes => 'month calendar'
+          :month_classes => 'month calendar',
+          :month_header_classes => 'month'
         }.merge(options))
       end
       
@@ -19,7 +20,7 @@ module Calendar
         doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => 0, :cellpadding => 0 do
           doc.thead do
             doc.tr do
-              doc.th month, :class => 'month', :colspan => 7
+              doc.th month, :class => options[:month_header_classes], :colspan => 7
             end
             doc.tr do
               days_of_week.each do |day|
