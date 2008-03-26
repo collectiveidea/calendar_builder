@@ -6,6 +6,7 @@ module Calendar
         @date = date
         @calendar = calendar
         @css_classes = calendar.default_css_classes(date)
+        @id = "date_#{date.strftime('%Y-%m-%d')}"
       end
   
       def method_missing(method, *args)
