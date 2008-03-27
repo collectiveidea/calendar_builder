@@ -86,6 +86,12 @@ class EventFindersTest < Test::Unit::TestCase
     Event.find_for_month_with_outliers(Date.parse('2008-01-01'), :all)
   end
   
+  def test_find_for_date_range_with_outliers_near_end_of_month
+    # January 2008, starting the week on Monday, has Dec 30-31 and Feb 1-2 in view
+    Event.expects(:find_for_date_range).with(Date.parse('2007-12-30')..Date.parse('2008-02-02'), :all)
+    Event.find_for_month_with_outliers(Date.parse('2008-01-28'), :all)
+  end
+  
   def test_find_for_date
     assert_equal Event.find_for_date_range((3.days.ago..3.days.ago), :all), Event.find_for_date(3.days.ago, :all)
   end
