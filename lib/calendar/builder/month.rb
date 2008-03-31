@@ -7,6 +7,7 @@ module Calendar
           :month_label_format => "%B",
           :day_label_format => "%A", 
           :month_classes => 'month calendar',
+          :show_month_header => true,
           :month_header_classes => 'month',
           :cellspacing => 0,
           :cellpadding => 0
@@ -21,8 +22,10 @@ module Calendar
         doc = ::Builder::XmlMarkup.new(:indent => 4)
         doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => options[:cellspacing], :cellpadding => options[:cellpadding] do
           doc.thead do
-            doc.tr do
-              doc.th month, :class => options[:month_header_classes], :colspan => 7
+            if options[:show_month_header]
+              doc.tr do
+                doc.th month, :class => options[:month_header_classes], :colspan => 7
+              end
             end
             doc.tr do
               days_of_week.each do |day|
