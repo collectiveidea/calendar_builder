@@ -4,6 +4,7 @@ require 'calendar/builder/proxy'
 require 'calendar/builder/day'
 require 'calendar/builder/week'
 require 'calendar/builder/month'
+require 'calendar/builder/rolling_month'
 
 module CollectiveIdea
   module CalendarBuilder

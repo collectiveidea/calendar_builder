@@ -56,6 +56,12 @@ module CollectiveIdea
         end
       end
       
+      def find_for_rolling_month(date=Date.today, number_of_weeks=4, *args)
+        beginning = date.beginning_of_week-1
+        ending = (beginning + number_of_weeks.weeks).next_week.beginning_of_week-2
+        find_for_date_range(beginning..ending, *args)
+      end
+      
       # In a typical month calendar view, you'll have a couple days at the start and/or end of the month
       # that are from the next/previous month.  This will find those dates too.  
       # FIXME: Don't assume weeks start on Monday.
