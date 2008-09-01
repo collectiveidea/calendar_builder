@@ -54,7 +54,7 @@ module CollectiveIdea
         in_date_range(date.to_date..date.to_date)
       end
       
-      def for_month(date=Date.today)
+      def in_month(date=Date.today)
         in_date_range(date.beginning_of_month..date.end_of_month)
       end
       
