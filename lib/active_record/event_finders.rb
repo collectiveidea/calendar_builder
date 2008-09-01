@@ -20,68 +20,56 @@ module CollectiveIdea
         include Helpers
         extend Helpers
         extend ClassMethods
+        
+        class_eval do
+
+          named_scope :find_for_month, lambda{|date| 
+            {:conditions => ["DATE_FORMAT(#{quoted_table_name}.#{quoted_begin_at_column_name}, \"%Y-%m\") = :date OR DATE_FORMAT(#{quoted_table_name}.#{quoted_end_at_column_name}, \"%Y-%m\") = :date", {:date => date.strftime("%Y-%m")}]} 
+          }
+
+          # Find for a range of dates
+          # We use the beginning of day for the first date and the end of day for the last date
+          # so that we get the full range.
+          # The event's
+          # * end is always after the beginning of the range
+          # * Beginning is before the range and ends after the beginning of the range
+          # OR
+          # * Beginning is inside the range.
+          # MySQL treats BETWEEN() strangely with dates, so we don't use it.
+          named_scope :find_for_date_range, lambda{|range|
+            range ||= (Date.today..Date.today)
+            {:conditions => ["
+              #{quoted_table_name}.#{quoted_end_at_column_name} >= :begin_at AND (
+                (#{quoted_table_name}.#{quoted_begin_at_column_name} <= :begin_at AND :begin_at <= #{quoted_table_name}.#{quoted_end_at_column_name}) 
+                  OR (#{quoted_table_name}.#{quoted_begin_at_column_name} >= :begin_at AND :end_at >= #{quoted_table_name}.#{quoted_begin_at_column_name} )
+              )", {
+              :begin_at => range.first.beginning_of_day, 
+              :end_at => range.last.end_of_day}]}
+          }
+
+          named_scope :find_upcoming, lambda{ {:conditions => ["#{quoted_table_name}.#{quoted_end_at_column_name} > ?", Time.now]} }
+        end    
       end
     end
     
     module ClassMethods
       
-      def find_for_date(date=Date.today, *args)
+      def find_for_date(date=Date.today)
         # we call date.to_date to ensure it is a Date (not a Time or CalendarBuilder::Proxy)
-        find_for_date_range((date.to_date..date.to_date), *args)
-      end
-
-      # Find for a range of dates
-      # We use the beginning of day for the first date and the end of day for the last date
-      # so that we get the full range.
-      # The event's
-      # * end is always after the beginning of the range
-      # * Beginning is before the range and ends after the beginning of the range
-      # OR
-      # * Beginning is inside the range.
-      # MySQL treats BETWEEN() strangely with dates, so we don't use it.
-      def find_for_date_range(range=(Date.today..Date.today), *args)
-        with_scope(:find => {:conditions => ["
-          #{quoted_table_name}.#{quoted_end_at_column_name} >= :begin_at AND (
-            (#{quoted_table_name}.#{quoted_begin_at_column_name} <= :begin_at AND :begin_at <= #{quoted_table_name}.#{quoted_end_at_column_name}) 
-              OR (#{quoted_table_name}.#{quoted_begin_at_column_name} >= :begin_at AND :end_at >= #{quoted_table_name}.#{quoted_begin_at_column_name} )
-          )", {
-          :begin_at => range.first.beginning_of_day, 
-          :end_at => range.last.end_of_day}]}) { find_ordered(*args) }
-      end
-
-      def find_for_month(date=Date.today, *args)
-        # we call date.to_date to ensure it is a Date (not a Time or CalendarBuilder::Proxy)
-        with_scope(:find => {:conditions => ["DATE_FORMAT(#{quoted_table_name}.#{quoted_begin_at_column_name}, \"%Y-%m\") = :date OR DATE_FORMAT(#{quoted_table_name}.#{quoted_end_at_column_name}, \"%Y-%m\") = :date", {:date => date.strftime("%Y-%m")}]}) do 
-          find_ordered(*args)
-        end
+        find_for_date_range(date.to_date..date.to_date)
       end
       
-      def find_for_rolling_month(date=Date.today, number_of_weeks=4, *args)
+      def find_for_rolling_month(date=Date.today, number_of_weeks=4)
         beginning = date.beginning_of_week-1
         ending = (beginning + number_of_weeks.weeks).next_week.beginning_of_week-2
-        find_for_date_range(beginning..ending, *args)
+        find_for_date_range(beginning..ending)
       end
       
       # In a typical month calendar view, you'll have a couple days at the start and/or end of the month
       # that are from the next/previous month.  This will find those dates too.  
       # FIXME: Don't assume weeks start on Monday.
-      def find_for_month_with_outliers(date=Date.today, *args)
-        find_for_date_range(date.beginning_of_month.beginning_of_week-1..date.end_of_month.next_week.beginning_of_week-2, *args)
-      end
-
-      def find_upcoming(*args)
-        with_scope(:find => {:conditions => ["#{quoted_table_name}.#{quoted_begin_at_column_name} > ?", Time.now]}) { find_ordered(*args) }
-      end
-
-      # Common ordering for all the other finders
-      def find_ordered(*args)
-        if event_finder_options[:order].blank?
-          find(*args)
-        else
-          with_scope(:find => {:order => event_finder_options[:order]}) do
-            find(*args)
-          end
-        end
+      def find_for_month_with_outliers(date=Date.today)
+        find_for_date_range(date.beginning_of_month.beginning_of_week-1..date.end_of_month.next_week.beginning_of_week-2)
       end
     
     end

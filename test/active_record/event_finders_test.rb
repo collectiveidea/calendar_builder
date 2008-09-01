@@ -69,7 +69,7 @@ class EventFindersTest < Test::Unit::TestCase
     begin_at = 10.days.from_now
     end_at = 20.days.from_now
     
-    Event.find_for_date_range(begin_at..end_at, :all).each do |event|
+    Event.find_for_date_range(begin_at..end_at).each do |event|
       # * end is always after the beginning of the range
       assert event.end_at > begin_at
       #  Beginning is before the range and ends after the beginning of the range
@@ -82,17 +82,17 @@ class EventFindersTest < Test::Unit::TestCase
   
   def test_find_for_date_range_with_outliers
     # January 2008, starting the week on Monday, has Dec 30-31 and Feb 1-2 in view
-    Event.expects(:find_for_date_range).with(Date.parse('2007-12-30')..Date.parse('2008-02-02'), :all)
-    Event.find_for_month_with_outliers(Date.parse('2008-01-01'), :all)
+    Event.expects(:find_for_date_range).with(Date.parse('2007-12-30')..Date.parse('2008-02-02'))
+    Event.find_for_month_with_outliers(Date.parse('2008-01-01'))
   end
   
   def test_find_for_date_range_with_outliers_near_end_of_month
     # January 2008, starting the week on Monday, has Dec 30-31 and Feb 1-2 in view
-    Event.expects(:find_for_date_range).with(Date.parse('2007-12-30')..Date.parse('2008-02-02'), :all)
-    Event.find_for_month_with_outliers(Date.parse('2008-01-28'), :all)
+    Event.expects(:find_for_date_range).with(Date.parse('2007-12-30')..Date.parse('2008-02-02'))
+    Event.find_for_month_with_outliers(Date.parse('2008-01-28'))
   end
   
   def test_find_for_date
-    assert_equal Event.find_for_date_range((3.days.ago..3.days.ago), :all), Event.find_for_date(3.days.ago, :all)
+    assert_equal Event.find_for_date_range((3.days.ago..3.days.ago)), Event.find_for_date(3.days.ago)
   end
 end
