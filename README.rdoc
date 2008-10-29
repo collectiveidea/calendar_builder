@@ -1,5 +1,4 @@
-CalendarBuilder
-===============
+== CalendarBuilder
 
 CalendarBuilder does a couple things
 
@@ -14,22 +13,22 @@ Add docs here. Please.
 
 Assuming you have an event model with some sort of begin_at and end_at, you can use all these finders:
 
-Event.upcoming
-Event.on_date(date)
-Event.in_month(date)
-Event.in_date_range(date1..date2)
-Event.in_rolling_month(date, number_of_weeks)
-Event.in_month_with_outliers(date)
+  Event.upcoming
+  Event.on_date(date)
+  Event.in_month(date)
+  Event.in_date_range(date1..date2)
+  Event.in_rolling_month(date, number_of_weeks)
+  Event.in_month_with_outliers(date)
 
 If your event model is an association unto some other model, like a Community for instance, you can do the following:
 
-community = Community.find(1)
-comunity.events.upcoming
-comunity.events.on_date(date)
-comunity.events.in_month(date)
-comunity.events.in_date_range(date1..date2)
-comunity.events.in_rolling_month(date, number_of_weeks)
-comunity.events.in_month_with_outliers(date)
+  community = Community.find(1)
+  comunity.events.upcoming
+  comunity.events.on_date(date)
+  comunity.events.in_month(date)
+  comunity.events.in_date_range(date1..date2)
+  comunity.events.in_rolling_month(date, number_of_weeks)
+  comunity.events.in_month_with_outliers(date)
 
 == ToDo
 
