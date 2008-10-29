@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'ruby-debug'
 
 class EventFindersTest < Test::Unit::TestCase
   #fixtures :events

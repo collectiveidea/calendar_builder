@@ -8,6 +8,7 @@ require 'active_record'
 require File.dirname(__FILE__) + '/../init.rb'
 
 require 'test/unit'
+require 'ruby-debug'
 require 'mocha'
 require 'action_controller/test_process'
 

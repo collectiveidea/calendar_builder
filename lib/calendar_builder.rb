@@ -1,3 +1,4 @@
+require 'core_ext/object'
 require 'core_ext/time'
 require 'calendar/builder'
 require 'calendar/builder/proxy'
