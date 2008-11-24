@@ -3,6 +3,7 @@ require 'rubygems'
 require 'action_controller'
 require 'action_view'
 gem 'activerecord', '>= 1.99.1'
+gem 'sqlite3-ruby'
 require 'active_record'
 
 require File.dirname(__FILE__) + '/../init.rb'
@@ -22,7 +23,6 @@ ActiveRecord::Migration.verbose = false
 load(File.join(File.dirname(__FILE__), "db", "schema.rb"))
 
 Dir["#{File.dirname(__FILE__)}/fixtures/*.rb"].each {|file| require file }
-
 
 class Test::Unit::TestCase #:nodoc:
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"

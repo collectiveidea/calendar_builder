@@ -11,9 +11,6 @@ module Calendar
     # * <tt>:day_label_format</tt>: The strftime format for the label
     #
     class Week
-      include ActionView::Helpers::TextHelper
-      include ActionView::Helpers::CaptureHelper
-      
       attr_accessor :options
       
       def initialize(options = {})
@@ -42,7 +39,7 @@ module Calendar
       def each(&block)
         (begin_on..end_on).each do |date|
           proxy = Proxy.new(date, self)
-          @days[date] = { :proxy => proxy, :content => capture(proxy, &block) }
+          @days[date] = { :proxy => proxy, :content => yield(proxy) }
         end
       end
       

@@ -19,8 +19,8 @@ module CollectiveIdea
     def calendar(options = {}, &block)
       cal = Calendar::Builder.for(options.delete(:type) || :month).new(options)
       if block_given?
-        cal.each(&block)
-        concat cal.to_s, block.binding
+        cal.each { |date| capture(date, &block) }
+        concat cal.to_s, &block
       else
         cal
       end
