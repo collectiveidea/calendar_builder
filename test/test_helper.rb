@@ -1,9 +1,10 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'rubygems'
+require 'multi_rails_init'
 require 'action_controller'
 require 'action_view'
-gem 'activerecord', '>= 1.99.1'
-gem 'sqlite3-ruby'
+# gem 'activerecord', '>= 1.99.1'
+# gem 'sqlite3-ruby'
 require 'active_record'
 
 require File.dirname(__FILE__) + '/../init.rb'
@@ -24,4 +25,5 @@ class Test::Unit::TestCase #:nodoc:
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   self.use_transactional_fixtures = true
   self.use_instantiated_fixtures  = false
+  fixtures :all
 end

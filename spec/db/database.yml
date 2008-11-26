@@ -1,0 +1,6 @@
+sqlite3:
+  adapter: sqlite3
+  dbfile: calendar_builder.sqlite3.db
+sqlite3mem:
+  :adapter: sqlite3
+  :dbfile: ":memory:"

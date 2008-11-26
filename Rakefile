@@ -1,14 +1,15 @@
 require 'rake'
-require 'rake/testtask'
+require 'spec/rake/spectask'
 require 'rake/rdoctask'
+require "load_multi_rails_rake_tasks" rescue LoadError nil
 
-desc 'Default: run unit tests.'
-task :default => :test
+desc 'Default: run specs.'
+task :default => :spec
 
-desc 'Test the calendar_builder plugin.'
-Rake::TestTask.new(:test) do |t|
+desc 'Test the acts_as_audited plugin'
+Spec::Rake::SpecTask.new(:spec) do |t|
   t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
+  t.pattern = 'spec/**/*_spec.rb'
   t.verbose = true
 end
 

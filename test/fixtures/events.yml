@@ -15,25 +15,31 @@ in_the_past:
 ### Events for range tests (10-20 days from now)
 
 # event fully in range
-15_days_from_now
+15_days_from_now:
   name: 15 days from now
   begin_at: <%= 15.days.from_now.to_s :db %>
   end_at: <%= 16.days.from_now.to_s :db %>
   
 # event starts in range
-15_days_from_now_long
+15_days_from_now_long:
   name: 15 days from now long
   begin_at: <%= 15.days.from_now.to_s :db %>
   end_at: <%= 56.days.from_now.to_s :db %>
 
 # event ends in range
-5_days_from_now
+5_days_from_now:
   name: 1 days from now
   begin_at: <%= 5.days.from_now.to_s :db %>
   end_at: <%= 16.days.from_now.to_s :db %>
 
 # event fully in range
-15_days_from_now
+15_days_from_now:
   name: 15 days from now
   begin_at: <%= 15.days.from_now.to_s :db %>
   end_at: <%= 16.days.from_now.to_s :db %>
+  
+last_month:
+  name: Last Month
+  begin_at: <%= (Time.now.beginning_of_month - 1.day).to_s :db %>
+  end_at: <%= (Time.now.beginning_of_month.beginning_of_day - 1.minute).to_s :db %>
+  
