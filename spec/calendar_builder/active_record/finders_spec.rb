@@ -126,10 +126,17 @@ describe CalendarBuilder::ActiveRecord::Finders do
       Event.scheduled(1..2).should == 'scope'
     end
     
+    it "should take a hash with :for and :on" do
+      calendar = CalendarBuilder.for(:month).new(:date => Date.today)
+      Event.should_receive(:overlapping).with(calendar.begin_at..calendar.end_at).and_return('scope')
+      Event.scheduled(:for => :month, :on => Date.today).should == 'scope'
+    end
+    
     it "should raise an argument error when other arguments are passed" do
       lambda { Event.scheduled(1) }.should raise_error(ArgumentError)
       lambda { Event.scheduled('a') }.should raise_error(ArgumentError)
     end
+    
   end
   
 end

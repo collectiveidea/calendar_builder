@@ -57,6 +57,9 @@ module CalendarBuilder
             overlapping period.to_time.beginning_of_day..period.to_time.end_of_day
           elsif Range === period
             overlapping period
+          elsif Hash === period
+            calendar = CalendarBuilder.for(period[:for]).new(:date => period[:on])
+            scheduled calendar
           else
             raise ArgumentError, 'Must respond to #begin_at and #end_at, or be a Date or Range'
           end
