@@ -1,3 +1,4 @@
+require 'calendar_builder/base'
 require 'calendar_builder/day'
 require 'calendar_builder/week'
 require 'calendar_builder/month'

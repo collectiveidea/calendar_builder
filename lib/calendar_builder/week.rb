@@ -9,30 +9,19 @@ module CalendarBuilder
   #   Default is <tt>:sunday</tt>
   # * <tt>:day_label_format</tt>: The strftime format for the label
   #
-  class Week
+  class Week < Base
     attr_accessor :options
     
     def initialize(options = {})
-      self.options = {
-        :date => Date.today,
+      super({
         :first_day_of_week => :sunday,
         :day_label_format => "%a, %b %d",
-      }.merge(options)
-      self.options[:except] = [self.options[:except]].flatten
-      self.options[:date] = self.options[:date].to_date
+      }.merge(options))
       @days = {}
-    end
-    
-    def type
-      :week
     end
     
     def day_label_format
       options[:day_label_format]
-    end
-    
-    def date
-      @options[:date]
     end
     
     def each(&block)

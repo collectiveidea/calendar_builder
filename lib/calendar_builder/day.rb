@@ -1,21 +1,15 @@
 require 'builder'
 
 module CalendarBuilder
-  class Day
+  class Day < Base
     attr_accessor :options
     
     def initialize(options = {})
-      @options = {
-        :date => Date.today,
+      super({
         :begin_hour => 7,
         :end_hour => 18,
         :day_label_format => "%A, %B %d, %Y",
-      }.merge(options)
-      @options[:except] = [@options[:except]].compact.flatten
-    end
-    
-    def type
-      :day
+      }.merge(options))
     end
     
     def day_label_format
@@ -26,12 +20,8 @@ module CalendarBuilder
       [date]
     end
     
-    def date
-      options[:date]
-    end
-    
     def begin_on
-      date.to_time
+      date.to_time.beginning_of_day
     end
     alias_method :begin_at, :begin_on
     
@@ -48,17 +38,13 @@ module CalendarBuilder
     
     def next
       day = Day.new(options.merge(:date => date + 1))
-      while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
-        day = day.next
-      end
+      day = day.next while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
       day
     end
     
     def previous
       day = Day.new(options.merge(:date => date - 1))
-      while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
-        day = day.previous
-      end
+      day = day.previous while options[:except].include?(DAYNAME_SYMBOLS[day.date.wday])
       day
     end
   end

@@ -13,10 +13,6 @@ module CalendarBuilder
       }.merge(options))
     end
     
-    def type
-      :month
-    end
-
     def to_s
       doc = ::Builder::XmlMarkup.new(:indent => 4)
       doc.table :id => options[:id], :class => options[:month_classes], :cellspacing => options[:cellspacing], :cellpadding => options[:cellpadding] do

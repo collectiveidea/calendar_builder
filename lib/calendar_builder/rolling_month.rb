@@ -2,13 +2,7 @@ module CalendarBuilder
   class RollingMonth < Month
     
     def initialize(options = {})
-      super({
-        :number_of_weeks => 4
-      }.merge(options))
-    end
-    
-    def type
-      :rolling_month
+      super({:number_of_weeks => 4}.merge(options))
     end
     
     def begin_on

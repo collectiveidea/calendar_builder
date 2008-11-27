@@ -25,3 +25,4 @@ Spec::Runner.configure do |config|
   # config.fixture_path = '/spec/fixtures/'
 end
 
+Dir[File.dirname(__FILE__) + '/shared/*.rb'].each {|s| require s }
