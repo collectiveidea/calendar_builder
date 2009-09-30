@@ -24,12 +24,12 @@ class EventFindersTest < Test::Unit::TestCase
 
   def test_should_return_all_parties_in_date_range_when_not_scoped
     expected = @fun_parties.length + @boring_parties.length
-    actual = Party.in_date_range(Time.now..10.days.from_now).length
+    actual = Party.in_date_range(Time.zone.now..10.days.from_now).length
     assert_equal expected, actual
   end
 
   def test_should_return_only_fun_parties_in_date_range_when_scoped_to_community
-    actual = @fun_community.parties.in_date_range(Time.now..10.days.from_now)
+    actual = @fun_community.parties.in_date_range(Time.zone.now..10.days.from_now)
     assert_equal @fun_parties, actual
   end
   

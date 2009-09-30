@@ -7,7 +7,7 @@ module Calendar
       
       def initialize(options = {})
         @options = {
-          :date => Date.today,
+          :date => Time.zone.today,
           :begin_hour => 7,
           :end_hour => 18,
           :day_label_format => "%A, %B %d, %Y",

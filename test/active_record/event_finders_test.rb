@@ -47,13 +47,13 @@ class EventFindersTest < Test::Unit::TestCase
   
   def test_upcoming
     Event.upcoming(:all).each do |event|
-      assert e.begin_at > Time.now
+      assert e.begin_at > Time.zone.now
     end
   end
   
   # FIXME: DATE_FORMAT() doesn't work in SQLite
   # def test_find_by_month
-  #   Event.in_month(Date.today, :all)
+  #   Event.in_month(Time.zone.today, :all)
   # end
   
   def test_in_date_range

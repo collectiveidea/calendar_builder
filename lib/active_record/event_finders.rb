@@ -42,7 +42,7 @@ module CollectiveIdea
             :end_at => range.last.end_of_day.in_time_zone}]}
         }
 
-        named_scope :upcoming, lambda{ {:conditions => ["#{quoted_table_name}.#{quoted_end_at_column_name} > ?", Time.now]} }
+        named_scope :upcoming, lambda{ {:conditions => ["#{quoted_table_name}.#{quoted_end_at_column_name} > ?", Time.zone.now]} }
 
         # In a typical month calendar view, you'll have a couple days at the 
         # start and/or end of the month that are from the next/previous month.

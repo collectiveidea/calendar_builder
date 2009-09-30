@@ -4,7 +4,7 @@ module Calendar
   module Builder
     #
     # == Options
-    # * <tt>:date</tt>: The date that the calendar should show.  Default is <tt>Date.today</tt>.
+    # * <tt>:date</tt>: The date that the calendar should show.  Default is <tt>Time.zone.today</tt>.
     # * <tt>:first_day_of_week</tt>: A symbol or integer (0 == <tt>:sunday</tt>,
     #   6 == <tt>:saturday</tt>) for day of week that the calendar should start on.
     #   Default is <tt>:sunday</tt>
@@ -15,7 +15,7 @@ module Calendar
       
       def initialize(options = {})
         self.options = {
-          :date => Date.today,
+          :date => Time.zone.today,
           :first_day_of_week => :sunday,
           :day_label_format => "%a, %b %d",
         }.merge(options)
@@ -129,7 +129,7 @@ module Calendar
           classes << "weekend" if weekend?(date)
           classes << "first" if beginning_of_week?(date)
           classes << "last" if end_of_week?(date)
-          classes << "today" if Date.today == date
+          classes << "today" if Time.zone.today == date
         end
       end
 
