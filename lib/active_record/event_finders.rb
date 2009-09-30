@@ -32,14 +32,14 @@ module CollectiveIdea
         #
         # MySQL treats BETWEEN() strangely with dates, so we don't use it.
         named_scope :in_date_range, lambda{|range|
-          range ||= (Date.today..Date.today)
+          range ||= (Time.zone.today..Time.zone.today)
           {:conditions => ["
             #{quoted_table_name}.#{quoted_end_at_column_name} >= :begin_at AND (
               (#{quoted_table_name}.#{quoted_begin_at_column_name} <= :begin_at AND :begin_at <= #{quoted_table_name}.#{quoted_end_at_column_name}) 
                 OR (#{quoted_table_name}.#{quoted_begin_at_column_name} >= :begin_at AND :end_at >= #{quoted_table_name}.#{quoted_begin_at_column_name} )
             )", {
-            :begin_at => range.first.beginning_of_day, 
-            :end_at => range.last.end_of_day}]}
+            :begin_at => range.first.beginning_of_day.in_time_zone, 
+            :end_at => range.last.end_of_day.in_time_zone}]}
         }
 
         named_scope :upcoming, lambda{ {:conditions => ["#{quoted_table_name}.#{quoted_end_at_column_name} > ?", Time.now]} }
@@ -49,7 +49,7 @@ module CollectiveIdea
         # This will find those dates too.
         # FIXME: Don't assume weeks start on Monday.
         scope_chain(:in_month_with_outliers) do |chain, *args|
-          date = (args.shift || Date.today).to_date
+          date = (args.shift || Time.zone.today).to_date
           start = date.beginning_of_month.beginning_of_week - 1
           stop = date.end_of_month.next_week.beginning_of_week - 2
           chain.in_date_range(start..stop)
@@ -57,17 +57,17 @@ module CollectiveIdea
         
         scope_chain(:on_date) do |chain, *args|
           # we call date.to_date to ensure it is an instance of Date
-          date = (args.shift || Date.today).to_date
+          date = (args.shift || Time.zone.today).to_date
           chain.in_date_range(date..date)
         end
         
         scope_chain(:in_month) do |chain, *args|
-          date = (args.shift || Date.today).to_date
+          date = (args.shift || Time.zone.today).to_date
           chain.in_date_range(date.beginning_of_month..date.end_of_month)
         end
         
         scope_chain(:in_rolling_month) do |chain, *args|
-          date = (args.shift || Date.today).to_date
+          date = (args.shift || Time.zone.today).to_date
           number_of_weeks = (args.shift || 4)
           beginning = date.beginning_of_week - 1
           ending = (beginning + number_of_weeks.weeks).
