@@ -6,6 +6,7 @@
 // For details, see the script.aculo.us web site: http://script.aculo.us/
 
 // experimental, Firefox-only
+var asma=0
 Event.simulateMouse = function(element, eventName) {
   var options = Object.extend({
     pointerX: 0,
